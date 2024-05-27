@@ -1,8 +1,20 @@
 import { SafeAreaView, ScrollView } from "react-native";
 import SearchBox from "./components/SearchBox";
+import User from "./components/User";
+import { useState, useCallback } from "react";
+
+type SearchData = {
+  avatar_url: string;
+  followers: string | number;
+  following: string | number;
+  login: string;
+  public_repos: string | number;
+};
 
 export default function App() {
-  const search: Function = (searchTerm: string) => {
+  const [searchData, setSearchData] = useState<SearchData | null>(null);
+
+  const search = useCallback((searchTerm: string) => {
     if (searchTerm == "") {
       alert("Please enter a search term");
       return;
@@ -22,12 +34,20 @@ export default function App() {
         throw error;
       }
     };
-    fetchApiRequest().then((response) => console.log(response));
-  };
+    fetchApiRequest().then((response) => setSearchData(response));
+  }, []);
+
   return (
     <SafeAreaView className='flex-1 bg-black'>
-      <ScrollView keyboardShouldPersistTaps='handled' className='h-screen'>
+      <ScrollView
+        keyboardShouldPersistTaps='handled'
+        className='h-screen p-4 mx-auto'>
         <SearchBox onSearch={search} />
+        {searchData ? (
+          <User src={searchData.avatar_url} userName={searchData.login} />
+        ) : (
+          <></>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
