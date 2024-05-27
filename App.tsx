@@ -2,8 +2,9 @@ import { SafeAreaView, ScrollView } from "react-native";
 import SearchBox from "./components/SearchBox";
 import User from "./components/User";
 import { useState, useCallback } from "react";
+import CardList from "./components/CardList";
 
-type SearchData = {
+export type SearchData = {
   avatar_url: string;
   followers: string | number;
   following: string | number;
@@ -43,10 +44,11 @@ export default function App() {
         keyboardShouldPersistTaps='handled'
         className='h-screen p-4 mx-auto'>
         <SearchBox onSearch={search} />
-        {searchData ? (
-          <User src={searchData.avatar_url} userName={searchData.login} />
-        ) : (
-          <></>
+        {searchData && (
+          <>
+            <User src={searchData.avatar_url} userName={searchData.login} />
+            <CardList searchData={searchData} />
+          </>
         )}
       </ScrollView>
     </SafeAreaView>
